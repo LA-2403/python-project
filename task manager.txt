@@ -1,0 +1,80 @@
+from datetime import datetime
+
+tasks = []
+
+while True:
+    print("\n--- Simple Task Manager ---")
+    print("1. View All Tasks")
+    print("2. Add Tasks (Continuous Mode)")
+    print("3. Search Tasks by Date (Check if Free)")
+    print("4. Delete Task")
+    print("5. Exit")
+    
+    choice = input("Choose an option (1-5): ").strip()
+    
+    if choice == "1":
+        print("\nYour Tasks:")
+        if not tasks:
+            print("Your list is empty!")
+        else:
+            for index, task in enumerate(tasks, 1):
+                print(f"{index}. {task}")
+                
+    elif choice == "2":
+        print("\n--- Continuous Task Entry ---")
+        print("Type 'done' as the task name when you are finished adding.")
+        
+        while True:
+            task_name = input("\nEnter task name: ").strip()
+            
+            # Stop the continuous loop if user types 'done'
+            if task_name.lower() == "done":
+                print("Exiting task entry mode...")
+                break
+                
+            if not task_name:
+                print("Task name cannot be empty. Try again or type 'done'.")
+                continue
+            
+            today_date = datetime.now().strftime("%Y-%m-%d")
+            task_date = input(f"Enter date (Press Enter to use today [{today_date}]): ").strip()
+            
+            if not task_date:
+                task_date = today_date
+                
+            full_task = f"{task_name} [Date: {task_date}]"
+            tasks.append(full_task)
+            print(f"✅ Added: '{full_task}'")
+            
+    elif choice == "3":
+        search_date = input("Enter the date you want to check (e.g., YYYY-MM-DD): ").strip().lower()
+        print(f"\nChecking schedule for '{search_date}'...")
+        
+        found = False
+        for index, task in enumerate(tasks, 1):
+            if search_date in task.lower():
+                print(f"👉 Match Found! ({index}) {task}")
+                found = True
+                
+        if not found:
+            print("🎉 You are free! No tasks found for that date.")
+            
+    elif choice == "4":
+        if not tasks:
+            print("No tasks to delete!")
+        else:
+            print("\nYour Tasks:")
+            for index, task in enumerate(tasks, 1):
+                print(f"{index}. {task}")
+            try:
+                num = int(input("Enter the task number to delete: "))
+                removed = tasks.pop(num - 1)
+                print(f"Deleted: '{removed}'")
+            except (ValueError, IndexError):
+                print("Invalid number! Please try again.")
+                
+    elif choice == "5":
+        print("Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please pick between 1 and 5.")
